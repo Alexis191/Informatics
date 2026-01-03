@@ -1,0 +1,59 @@
+{% extends 'gestion/base.html' %}
+{% block page_title %}Gestión de Usuarios (Admin){% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'crear_usuario' %}" class="btn btn-menatics">
+        <i class="fas fa-user-shield me-2"></i> Crear Nuevo Usuario
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-4">Usuario (Email)</th>
+                    <th>Nombre Completo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th class="text-end pe-4">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td class="ps-4 fw-bold">{{ u.email }}</td>
+                    <td>{{ u.get_full_name|default:"--" }}</td>
+                    <td>
+                        {% if u.is_superuser %}
+                            <span class="badge bg-danger">Superadmin</span>
+                        {% else %}
+                            <span class="badge bg-info text-dark">Usuario Normal</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.is_active %}
+                            <span class="badge bg-success bg-opacity-25 text-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'editar_usuario' u.id %}" class="btn btn-sm btn-outline-primary" title="Editar / Cambiar Clave">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                        {% if request.user.id != u.id %}
+                        <a href="{% url 'eliminar_usuario' u.id %}" class="btn btn-sm btn-outline-danger" 
+                           onclick="return confirm('¿Eliminar acceso a {{ u.email }}?');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

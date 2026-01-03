@@ -1,0 +1,96 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrómeda | Menatics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'gestion/css/style.css' %}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">
+            <img src="{% static 'gestion/img/logo.svg' %}" alt="Logo Menatics" class="logo-img">
+        </div>
+        
+        <nav class="nav flex-column mt-4">
+            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'dashboard' %}">
+                <i class="fas fa-calendar-alt"></i> Dashboard
+            </a>
+            <a class="nav-link {% if 'clientes' in request.path and 'crear' not in request.path %}active{% endif %}" href="{% url 'lista_clientes' %}">
+                <i class="fas fa-user me-2"></i> Clientes
+            </a>
+            <a class="nav-link {% if 'proveedores' in request.path %}active{% endif %}" href="{% url 'lista_proveedores' %}">
+                <i class="fas fa-truck"></i> Proveedores
+            </a>
+            <a class="nav-link {% if 'productos' in request.path %}active{% endif %}" href="{% url 'lista_productos' %}">
+                <i class="fas fa-box"></i> Servicios
+            </a>
+            <a class="nav-link" href="#">
+                <i class="fas fa-chart-bar"></i> Reportes
+            </a>
+            <a class="nav-link {% if 'perfil' in request.path %}active{% endif %}" href="{% url 'perfil_usuario' %}">
+                <i class="fas fa-id-card-alt"></i> Mi Configuración
+            </a>
+
+            {% if user.is_superuser %}
+                <div class="border-top my-2 mx-3"></div> <a class="nav-link text-dark {% if 'usuarios' in request.path %}active{% endif %}" href="{% url 'listar_usuarios' %}">
+                    <i class="fas fa-users-cog text-danger"></i> Gestión Usuarios
+                </a>
+            {% endif %}
+            
+            <div class="mt-auto p-3">
+                <form action="{% url 'logout' %}" method="POST" id="logout-form" style="display: none;">
+                    {% csrf_token %}
+                </form>
+                <a class="nav-link text-danger fw-bold" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+            <h4 class="m-0 fw-bold text-secondary">
+                {% block page_title %}Panel General{% endblock %}
+            </h4>
+            
+            <div class="d-flex align-items-center">
+                <form class="d-none d-md-flex ms-auto me-3 " action="{% url 'lista_clientes' %}" method="GET">
+                    <div class="input-group me-5 ">
+                        <input type="text" name="q" class="form-control border-2 bg-light" 
+                            placeholder="Buscar cliente por nombres o ruc" aria-label="Search" 
+                            value="{{ request.GET.q }}"> 
+                            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="d-flex align-items-center">
+                    <span class="me-2 fw-bold text-dark">{{ user.get_full_name|default:user.email }}</span>
+                    <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 40px; height: 40px;">
+                        {{ user.email|first|upper }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% extends 'gestion/base.html' %}
+{% block page_title %}Mi Configuración{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white pt-3 pb-2 border-bottom-0">
+                <h5 class="fw-bold"><i class="fas fa-id-badge me-2 text-warning"></i>Mis Datos Personales</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Correo (Usuario)</label>
+                        {{ form.email }} </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Nombres</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Apellidos</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-menatics">
+                            <i class="fas fa-save me-2"></i> Actualizar mi Información
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-muted small text-center">
+                 ¿Necesitas cambiar tu correo o contraseña? Contacta al Superadministrador.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

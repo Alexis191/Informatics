@@ -1,0 +1,95 @@
+{% extends 'gestion/base.html' %}
+{% block page_title %}Gestión de Proveedores{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-menatics" data-bs-toggle="modal" data-bs-target="#modalCrear">
+        <i class="fas fa-plus me-2"></i> Nuevo Proveedor
+    </button>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Nombre</th>
+                        <th>RUC</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in proveedores %}
+                    <tr>
+                        <td class="ps-4 fw-bold">{{ p.nombre }}</td>
+                        <td>{{ p.ruc }}</td>
+                        <td>{{ p.direccion }}</td>
+                        <td>{{ p.telefono }}</td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-outline-primary me-1" 
+                                    data-bs-toggle="modal" data-bs-target="#modalEditar"
+                                    data-id="{{ p.pk }}" data-nombre="{{ p.nombre }}"
+                                    data-ruc="{{ p.ruc }}" data-dir="{{ p.direccion }}"
+                                    data-tel="{{ p.telefono }}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <a href="{% url 'eliminar_proveedor' p.pk %}" class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Eliminar este proveedor?');"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No hay proveedores registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="POST" action="{% url 'guardar_proveedor' %}">
+            {% csrf_token %}
+            <div class="modal-header bg-warning text-white"><h5 class="modal-title fw-bold">Nuevo Proveedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <div class="mb-3"><label>Nombre</label><input type="text" name="nombre" class="form-control" required></div>
+                <div class="mb-3"><label>RUC</label><input type="text" maxlength="13" name="ruc" class="form-control" required></div>
+                <div class="mb-3"><label>Dirección</label><input type="text" name="direccion" class="form-control" required></div>
+                <div class="mb-3"><label>Teléfono</label><input type="text" name="telefono" class="form-control" required></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-menatics">Guardar</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="POST" action="{% url 'editar_proveedor' %}">
+            {% csrf_token %}
+            <input type="hidden" name="id_proveedor" id="edit_id">
+            <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold">Editar Proveedor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <div class="mb-3"><label>Nombre</label><input type="text" name="nombre" id="edit_nombre" class="form-control" required></div>
+                <div class="mb-3"><label>RUC</label><input type="text" name="ruc" id="edit_ruc" class="form-control" required></div>
+                <div class="mb-3"><label>Dirección</label><input type="text" name="direccion" id="edit_dir" class="form-control" required></div>
+                <div class="mb-3"><label>Teléfono</label><input type="text" name="telefono" id="edit_tel" class="form-control" required></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-primary">Actualizar</button></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('modalEditar').addEventListener('show.bs.modal', function (event) {
+        var btn = event.relatedTarget;
+        document.getElementById('edit_id').value = btn.getAttribute('data-id');
+        document.getElementById('edit_nombre').value = btn.getAttribute('data-nombre');
+        document.getElementById('edit_ruc').value = btn.getAttribute('data-ruc');
+        document.getElementById('edit_dir').value = btn.getAttribute('data-dir');
+        document.getElementById('edit_tel').value = btn.getAttribute('data-tel');
+    });
+</script>
+{% endblock %}

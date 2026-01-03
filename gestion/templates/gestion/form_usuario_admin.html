@@ -1,0 +1,63 @@
+{% extends 'gestion/base.html' %}
+{% block page_title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">{{ titulo }}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Correo Electrónico (Login)</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label>Nombres</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>Apellidos</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-danger">Contraseña</label>
+                        {{ form.nueva_clave }}
+                        <div class="form-text">Si estás editando, déjalo vacío para no cambiar la clave.</div>
+                    </div>
+
+                    <div class="row bg-light p-3 rounded mb-3 mx-1">
+                        <div class="col-6">
+                            <div class="form-check form-switch">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Usuario Activo</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-check form-switch">
+                                {{ form.is_superuser }}
+                                <label class="form-check-label fw-bold text-danger" for="{{ form.is_superuser.id_for_label }}">Es Superadmin</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'listar_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

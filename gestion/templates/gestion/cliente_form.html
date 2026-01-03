@@ -1,0 +1,482 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            {% if es_edicion %}
+                <i class="fas fa-edit text-primary me-2"></i>Editar Cliente
+            {% else %}
+                <i class="fas fa-user-plus text-warning me-2"></i>Nuevo Cliente
+            {% endif %}
+        </h2>        
+        <button type="submit" class="btn btn-menatics px-4 py-2">
+            <i class="fas fa-save me-2"></i> Guardar Cambios
+        </button>
+    </div>
+
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-white border-bottom-0 pt-3">
+            <h5 class="fw-bold text-dark">1. Datos generales del cliente</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="fw-bold text-dark">Razón social</label>
+                    {{ form_general.nombres_cliente }}
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-dark">RUC</label>
+                    {{ form_general.ruc_cliente }}
+                    
+                    {% if form_general.ruc_cliente.errors %}
+                        <div class="invalid-feedback" style="display: block;">
+                            {{ form_general.ruc_cliente.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-dark">Régimen Tributario</label>
+                    {{ form_general.regimen }}
+                </div>
+                <div class="col-md-4">
+                    <label class="fw-bold text-dark">Número de teléfono</label>
+                    <div class="input-group">
+                        {{ form_general.telefono_cliente }}
+                        
+                        <button type="button" class="btn btn-success text-white" onclick="enviarWhatsAppRecordatorio()" title="Enviar recordatorio de vencimiento">
+                            <i class="fab fa-whatsapp"></i> Recordar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="fw-bold text-dark">Correo electrónico</label>
+                    {{ form_general.correo_cliente }}
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="fw-bold text-dark"> <label>Precio final</label>
+                        {{ form_general.precio_pactado }}
+                        <label class="mt-2">Motivo del precio:</label>
+                        {{ form_general.motivo_precio }}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-check form-switch fw-bold">
+                        {{ form_general.envio_email }}
+                        <label class="form-check-label">Enviar notificaciones por correo electrónico</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        {{ form_general.activo }}
+                        <label class="form-check-label fw-bold" for="{{ form_general.activo.id_for_label }}">
+                            Cliente activo
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="fw-bold text-dark">Observaciones</label>
+                    {{ form_general.observaciones }}
+                </div> 
+
+                <div class="col-12 mt-4 pt-3 border-top">
+                    <div class="form-check form-switch"> 
+                        {{ form_general.contacto_alt }}
+                        <label class="form-check-label fw-bold" for="{{ form_general.contacto_alt.id_for_label }}">
+                            ¿Habilitar Contacto Alternativo?
+                        </label>
+                    </div>
+
+                    <div id="seccion-alternativo" class="mt-3 p-3 bg-light rounded border" style="display: none;">
+                        <h6 class="text-muted mb-3">Datos del Contacto Adicional</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Teléfono Alternativo</label>
+                                {{ form_general.telefono_alt }}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Correo Alternativo</label>
+                                {{ form_general.correo_alt }}
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label">Observación / Nombre del Contacto</label>
+                                {{ form_general.observacion_alt }}
+                                <div class="form-text">Si tienes el nombre de la persona, inclúyelo aquí.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-white border-bottom-0 pt-3">
+            <h5 class="fw-bold text-dark">2. Datos de servicio del cliente</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label>Plan contratado</label>
+                    {{ form_servicio.producto }}
+                </div>
+                <div class="col-md-4">
+                    <label>Proveedor</label>
+                    {{ form_servicio.proveedor }}
+                </div>
+                <div class="col-md-4">
+                    <label>Estado del cliente</label>
+                    {{ form_servicio.estado }}
+                </div>  
+
+                <div class="col-12 mt-4">
+                    <label class="form-label fw-bold border-bottom w-100 pb-2 mb-3">Módulos contratados</label>
+                    <div class="row px-2">
+                        <div class="col-md-3 col-6 mb-2">
+                            <div class="form-check p-3 border rounded bg-light">
+                                {{ form_servicio.mod_ventas }} 
+                                <label class="form-check-label fw-bold" for="{{ form_servicio.mod_ventas.id_for_label }}">Ventas</label>
+                                <div class="small text-muted" style="font-size: 0.75rem;">Facturación Elec.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-2">
+                            <div class="form-check p-3 border rounded bg-light">
+                                {{ form_servicio.mod_compras }}
+                                <label class="form-check-label fw-bold" for="{{ form_servicio.mod_compras.id_for_label }}">Compras</label>
+                                <div class="small text-muted" style="font-size: 0.75rem;">Liq. y Retenciones</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-2">
+                            <div class="form-check p-3 border rounded bg-light">
+                                {{ form_servicio.mod_tesoreria }}
+                                <label class="form-check-label fw-bold" for="{{ form_servicio.mod_tesoreria.id_for_label }}">Tesoreria</label>
+                                <div class="small text-muted" style="font-size: 0.75rem;">Cuentas por Cobrar</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-2">
+                            <div class="form-check p-3 border rounded bg-light">
+                                {{ form_servicio.mod_inventario }}
+                                <label class="form-check-label fw-bold" for="{{ form_servicio.mod_inventario.id_for_label }}">Inventario</label>
+                                <div class="small text-muted" style="font-size: 0.75rem;">Kardex y Valoración</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="text-success fw-bold">Fecha Creación</label>
+                    {{ form_servicio.fecha_creacion_visual }} 
+                    <small class="text-muted">Fecha del registro en sistema.</small>
+                </div> 
+                <div class="col-md-3">
+                    <label class="text-success fw-bold">Fecha Renovación (Inicio)</label>
+                    {{ form_servicio.fecha_renovacion }}
+                </div>
+                <div class="col-md-3">
+                    <label class="text-danger fw-bold">Fecha Vencimiento (+1 Año)</label>
+                    {{ form_servicio.fecha_vencimiento }}
+                </div>
+                <div class="col-md-3">
+                    <label class="text-primary fw-bold">Caducidad Firma Electrónica</label>
+                    {{ form_servicio.fecha_caducidad_firma }}
+                    <div class="form-text">Selecciona la fecha de expiración de la firma electrónica.</div>
+                </div>
+                <div class="col-12 mt-4">
+                    <label class="fw-bold text-dark">Consumo de facturas electrónicas</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">Facturas Emitidas:</span>
+                        
+                        {{ form_servicio.facturas_consumidas }}
+                        
+                        <button type="button" class="btn btn-primary" id="btn-consultar-db" onclick="consultarBaseExterna()">
+                            <i class="fas fa-sync-alt me-2"></i> Consultar número de facturas
+                        </button>
+                    </div>
+                    <div class="form-text text-primary" id="msg-consulta">
+                        <i class="fas fa-info-circle"></i> Asegúrate de llenar los "Datos Técnicos" abajo (Servidor y BD) antes de consultar.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5 border-0">
+        <div class="card-header bg-white border-bottom-0 pt-3">
+            <h5 class="fw-bold text-dark">3. Datos Técnicos</h5>
+        </div>
+        <div class="card-body">
+            
+            <h6 class="text-muted border-bottom pb-2 mb-3">Alojamiento y Base de Datos</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Servidor de Alojamiento *</label>
+                    {{ form_tecnico.servidor_alojamiento }}
+                    <div class="form-text">Servidor físico donde reside la base de datos.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Nombre de Base de Datos *</label>
+                    {{ form_tecnico.nombre_basedatos }}
+                    <div class="form-text">Nombre exacto en SQL Server (Ej: BD_CLIENTE_2025).</div>
+                </div>
+            </div>
+
+            <h6 class="text-muted border-bottom pb-2 mb-3">Credenciales del Portal</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">URL del Portal</label>
+                    {{ form_tecnico.url_portal }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Número de Portal</label>
+                    {{ form_tecnico.num_portal }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Clave del Portal</label>
+                    {{ form_tecnico.clave_portal }}
+                </div>
+            </div>
+
+            <h6 class="text-muted border-bottom pb-2 mb-3">Configuración Interna</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Versión del Sistema</label>
+                    {{ form_tecnico.version }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Firma Electrónica</label>
+                    {{ form_tecnico.firma }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Número de Servicios</label>
+                    {{ form_tecnico.num_servicios }}
+                </div>
+            </div>
+
+            <h6 class="text-muted border-bottom pb-2 mb-3">Correo para Notificaciones (SMTP)</h6>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Email del Sistema</label>
+                    {{ form_tecnico.email_tecnico }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Clave del Email</label>
+                    {{ form_tecnico.clave_email }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Código (App Password)</label>
+                    {{ form_tecnico.code_email }}
+                </div>
+            </div>
+
+        </div>
+    </div>  
+
+</form>
+
+<script>
+    // Script simple para calcular la fecha de vencimiento automáticamente (RF: +1 Año)
+    document.getElementById('id_fecha_renovacion').addEventListener('change', function() {
+        let fechaInicio = new Date(this.value);
+        if (!isNaN(fechaInicio.getTime())) {
+            // Sumar 1 año
+            fechaInicio.setFullYear(fechaInicio.getFullYear() + 1);
+            // Formatear a YYYY-MM-DD para el input date
+            let fechaFin = fechaInicio.toISOString().split('T')[0];
+            document.getElementById('id_fecha_vencimiento').value = fechaFin;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Identificar los elementos
+        const checkAlternativo = document.getElementById('{{ form_general.contacto_alt.id_for_label }}');
+        const divAlternativo = document.getElementById('seccion-alternativo');
+
+        // 2. Función para alternar visibilidad
+        function toggleAlternativo() {
+            if (checkAlternativo.checked) {
+                divAlternativo.style.display = 'block';
+                // Animación simple de entrada (opcional)
+                divAlternativo.classList.add('fade-in'); 
+            } else {
+                divAlternativo.style.display = 'none';
+            }
+        }
+
+        // 3. Ejecutar al cargar la página (para ediciones o recargas)
+        toggleAlternativo();
+
+        // 4. Ejecutar cada vez que el usuario haga clic
+        checkAlternativo.addEventListener('change', toggleAlternativo);
+    });
+
+    // 2. NUEVO: Script para consultar BD Externa (RF22)
+    async function consultarBaseExterna() {
+    const btn = document.getElementById('btn-consultar-db');
+    const msg = document.getElementById('msg-consulta');
+    
+    // --- IMPORTANTE: Verificamos que este ID exista en tu HTML ---
+    // Django suele ponerle 'id_' al principio del nombre del campo
+    const inputFacturas = document.getElementById('id_facturas_consumidas'); 
+
+    if (!inputFacturas) {
+        alert("ERROR GRAVE: No encuentro el campo con id 'id_facturas_consumidas' en el HTML.");
+        return;
+    }
+
+    const servidorSelect = document.getElementById('id_servidor_alojamiento'); 
+    const servidorId = servidorSelect.value; 
+    const nombreBD = document.getElementById('id_nombre_basedatos').value;
+    const fechaRenovacion = document.getElementById('id_fecha_renovacion').value;
+    const fechaVencimiento = document.getElementById('id_fecha_vencimiento').value;
+
+    if (!servidorId || !nombreBD) {
+        alert("Faltan datos técnicos (Servidor o BD).");
+        return;
+    }
+
+    btn.disabled = true;
+    msg.innerHTML = "Consultando...";
+    msg.className = "form-text text-warning";
+
+    try {
+        const response = await fetch('/api/consultar-consumo/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                servidor: servidorId,
+                db_name: nombreBD,
+                fecha_inicio: fechaRenovacion,
+                fecha_fin: fechaVencimiento
+            })
+        });
+
+        // Verificamos si la respuesta es válida antes de convertirla
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.status === 'ok') {
+            inputFacturas.value = data.cantidad;
+            msg.innerHTML = `Exito: ${data.cantidad} facturas.`;
+            msg.className = "form-text text-success fw-bold";
+        } else {
+            msg.innerHTML = "Error Backend: " + data.mensaje;
+            msg.className = "form-text text-danger";
+        }
+
+    } catch (error) {
+        // --- AQUÍ VEREMOS EL ERROR REAL ---
+        console.error("Error JS completo:", error);
+        msg.innerHTML = "Error JS: " + error.message; // <--- Muestra esto en pantalla
+        msg.className = "form-text text-danger fw-bold";
+    } finally {
+        btn.disabled = false;
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+        // ... (Tu código existente de contacto alternativo y base de datos) ...
+
+        // ---------------------------------------------------------
+        // NUEVO: FORZAR MAYÚSCULAS AL ESCRIBIR
+        // ---------------------------------------------------------
+        // Seleccionamos los campos específicos por su ID de Django
+        const camposMayusculas = [
+            'id_nombres_cliente',
+            'id_direccion',
+            'id_observaciones',
+            'id_observacion_alt',
+            // Agrega aquí cualquier otro ID que quieras en mayúsculas
+        ];
+
+        camposMayusculas.forEach(function(id) {
+            const input = document.getElementById(id);
+            if (input) {
+                // Agregar clase visual CSS
+                input.classList.add('uppercase-input');
+                
+                // Evento JS para cambiar el valor real a mayúsculas mientras se escribe
+                input.addEventListener('input', function() {
+                    let start = this.selectionStart; // Guardar posición del cursor
+                    let end = this.selectionEnd;
+                    
+                    this.value = this.value.toUpperCase();
+                    
+                    this.setSelectionRange(start, end); // Restaurar cursor
+                });
+            }
+        });
+    });
+    function enviarWhatsAppRecordatorio() {
+        // 1. Obtener los valores del formulario
+        // Nota: Usamos los IDs que Django genera automáticamente (id_nombrecampo)
+        const inputTelefono = document.getElementById('id_telefono_cliente');
+        const inputFechaVenc = document.getElementById('id_fecha_vencimiento');
+        const inputNombre = document.getElementById('id_nombres_cliente');
+
+        let telefono = inputTelefono.value.trim();
+        let fecha = inputFechaVenc.value;
+        let nombre = inputNombre.value;
+
+        // 2. Validaciones básicas
+        if (!telefono) {
+            alert("Por favor escribe un número de teléfono primero.");
+            inputTelefono.focus();
+            return;
+        }
+        
+        if (!fecha) {
+            alert("No hay fecha de vencimiento definida en la Sección 2.");
+            return;
+        }
+
+        // 3. Formatear el teléfono para WhatsApp (Ecuador)
+        // Quitamos espacios, guiones y paréntesis
+        telefono = telefono.replace(/[^0-9]/g, '');
+
+        // Si empieza con '09', le quitamos el '0' y agregamos '593'
+        if (telefono.startsWith('09') && telefono.length === 10) {
+            telefono = '593' + telefono.substring(1);
+        } 
+        // Si el usuario ya puso 593, lo dejamos. Si puso solo 9..., agregamos 593.
+        else if (telefono.startsWith('9') && telefono.length === 9) {
+            telefono = '593' + telefono;
+        }
+
+        // 4. Construir el mensaje
+        // "Buen día estimado [Nombre], le informamos que su servicio..."
+        // Usamos encodeURIComponent para que los espacios y tildes funcionen en la URL
+        const mensajeTexto = `Buen día estimado ${nombre}, le informamos que su servicio de facturación electrónica está por caducar el ${fecha}. Le invitamos a renovar para evitar interrupciones.`;
+        
+        const mensajeCodificado = encodeURIComponent(mensajeTexto);
+
+        // 5. Abrir WhatsApp Web
+        const url = `https://wa.me/${telefono}?text=${mensajeCodificado}`;
+        window.open(url, '_blank');
+    }
+</script>
+
+<style>
+    /* Efecto suave para que no aparezca de golpe */
+    .fade-in {
+        animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    /* Esto hace que visualmente se vea mayúscula, aunque el usuario escriba minúscula */
+    .uppercase-input {
+        text-transform: uppercase;
+    }
+</style>
+
+{% endblock %}
