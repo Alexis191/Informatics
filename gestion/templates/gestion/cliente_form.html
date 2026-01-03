@@ -123,15 +123,15 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label>Plan contratado</label>
+                    <label class="fw-bold">Plan contratado</label>
                     {{ form_servicio.producto }}
                 </div>
                 <div class="col-md-4">
-                    <label>Proveedor</label>
+                    <label class="fw-bold">Proveedor</label>
                     {{ form_servicio.proveedor }}
                 </div>
                 <div class="col-md-4">
-                    <label>Estado del cliente</label>
+                    <label class="fw-bold">Estado del cliente</label>
                     {{ form_servicio.estado }}
                 </div>  
 
@@ -212,72 +212,58 @@
             <h5 class="fw-bold text-dark">3. Datos Técnicos</h5>
         </div>
         <div class="card-body">
-            
-            <h6 class="text-muted border-bottom pb-2 mb-3">Alojamiento y Base de Datos</h6>
             <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Servidor de Alojamiento *</label>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Servidor de Alojamiento</label>
                     {{ form_tecnico.servidor_alojamiento }}
                     <div class="form-text">Servidor físico donde reside la base de datos.</div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Nombre de Base de Datos *</label>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Nombre de Base de Datos</label>
                     {{ form_tecnico.nombre_basedatos }}
                     <div class="form-text">Nombre exacto en SQL Server (Ej: BD_CLIENTE_2025).</div>
                 </div>
-            </div>
-
-            <h6 class="text-muted border-bottom pb-2 mb-3">Credenciales del Portal</h6>
-            <div class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <label class="form-label">URL del Portal</label>
+                    <label class="form-label fw-bold">URL del Portal</label>
                     {{ form_tecnico.url_portal }}
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Número de Portal</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Número de Portal</label>
                     {{ form_tecnico.num_portal }}
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Clave del Portal</label>
-                    {{ form_tecnico.clave_portal }}
-                </div>
-            </div>
-
-            <h6 class="text-muted border-bottom pb-2 mb-3">Configuración Interna</h6>
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <label class="form-label">Versión del Sistema</label>
-                    {{ form_tecnico.version }}
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Firma Electrónica</label>
-                    {{ form_tecnico.firma }}
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Número de Servicios</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Número de Servicios</label>
                     {{ form_tecnico.num_servicios }}
                 </div>
-            </div>
-
-            <h6 class="text-muted border-bottom pb-2 mb-3">Correo para Notificaciones (SMTP)</h6>
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">Email del Sistema</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Versión del Sistema</label>
+                    {{ form_tecnico.version }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Clave del Portal</label>
+                    {{ form_tecnico.clave_portal }}
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Firma Electrónica</label>
+                    {{ form_tecnico.firma }}
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Email del Sistema</label>
                     {{ form_tecnico.email_tecnico }}
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Clave del Email</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Clave del Email</label>
                     {{ form_tecnico.clave_email }}
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Código (App Password)</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Código (App Password)</label>
                     {{ form_tecnico.code_email }}
                 </div>
             </div>
-
         </div>
     </div>  
-
 </form>
 
 <script>
