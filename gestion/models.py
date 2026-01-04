@@ -61,11 +61,10 @@ class DatosServicio(models.Model):
     """
     # Relaciones
     producto = models.ForeignKey(DatosProducto, on_delete=models.PROTECT)
-    proveedor = models.ForeignKey(DatosProveedor, on_delete=models.PROTECT, default=4)
-    estado = models.ForeignKey(EstadoCliente, on_delete=models.PROTECT, default=2)
+    
 
     # Fechas
-    fecha_creacion = models.DateField(auto_now_add=True)
+    fecha_creacion = models.DateField(null=True, blank=True, verbose_name="Fecha de Creación")
     fecha_renovacion = models.DateField(null=True, blank=True)
     fecha_vencimiento = models.DateField(null=True, blank=True)
 
@@ -74,6 +73,9 @@ class DatosServicio(models.Model):
     facturas_consumidas = models.IntegerField(default=0, help_text="Actualizado automáticamente desde BD externa")
 
     fecha_caducidad_firma = models.DateField(null=True, blank=True, verbose_name="Caducidad Firma")
+
+    precio_pactado = models.DecimalField(max_digits=10, decimal_places=2, help_text="Precio real vendido al cliente")
+    observaciones = models.TextField(null=True, blank=True, verbose_name="Observaciones del Servicio")
     # 3. NUEVO: LOS 4 MÓDULOS DEL SISTEMA (Checkboxes)
     mod_ventas = models.BooleanField(default=False, verbose_name="Ventas (Facturación)")
     mod_compras = models.BooleanField(default=False, verbose_name="Compras (Liq/Ret)")
@@ -92,6 +94,8 @@ class DatosGeneralesCliente(models.Model):
     telefono_cliente = models.CharField(max_length=10)
     correo_cliente = models.EmailField(max_length=100)
     activo = models.BooleanField(default=True, verbose_name="Cliente Activo")
+    proveedor = models.ForeignKey(DatosProveedor, on_delete=models.PROTECT, default=4)
+    estado = models.ForeignKey(EstadoCliente, on_delete=models.PROTECT, default=4)
 
     # Campos Alternativos
     contacto_alt = models.BooleanField(default=False)
@@ -102,7 +106,7 @@ class DatosGeneralesCliente(models.Model):
     # NUEVO CAMPO VINCULADO (Sustituye al anterior si lo tenías como texto)
     regimen = models.ForeignKey(DatosRegimen, on_delete=models.SET_NULL, null=True, blank=True, default=2, verbose_name="Régimen Tributario")
     # Precio histórico (RD01 Inmutabilidad)
-    precio_pactado = models.DecimalField(max_digits=10, decimal_places=2, help_text="Precio real vendido al cliente")
+    
     motivo_precio = models.TextField(null=True, blank=True)
     
     envio_email = models.BooleanField(default=True)

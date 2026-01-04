@@ -38,10 +38,10 @@
                     {% endif %}
                 </div>
                 <div class="col-md-3">
-                    <label class="fw-bold text-dark">Régimen Tributario</label>
+                    <label class="fw-bold text-dark">Régimen tributario</label>
                     {{ form_general.regimen }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="fw-bold text-dark">Número de teléfono</label>
                     <div class="input-group">
                         {{ form_general.telefono_cliente }}
@@ -51,25 +51,23 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <label class="fw-bold text-dark">Proveedor</label>
+                    {{ form_general.proveedor }}
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-dark">Estado</label>
+                    {{ form_general.estado }}
+                </div>
+                <div class="col-md-3">
                     <label class="fw-bold text-dark">Correo electrónico</label>
                     {{ form_general.correo_cliente }}
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="fw-bold text-dark"> <label>Precio final</label>
-                        {{ form_general.precio_pactado }}
-                        <label class="mt-2">Motivo del precio:</label>
-                        {{ form_general.motivo_precio }}
-                    </div>
-                </div>
-                <div class="col-6">
+                </div>              
+                <div class="col-3">
                     <div class="form-check form-switch fw-bold">
                         {{ form_general.envio_email }}
-                        <label class="form-check-label">Enviar notificaciones por correo electrónico</label>
+                        <label class="form-check-label">Enviar notificaciones por email</label>
                     </div>
-                </div>
-                <div class="col-12">
                     <div class="form-check form-switch">
                         {{ form_general.activo }}
                         <label class="form-check-label fw-bold" for="{{ form_general.activo.id_for_label }}">
@@ -77,7 +75,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-9">
                     <label class="fw-bold text-dark">Observaciones</label>
                     {{ form_general.observaciones }}
                 </div> 
@@ -86,29 +84,28 @@
                     <div class="form-check form-switch"> 
                         {{ form_general.contacto_alt }}
                         <label class="form-check-label fw-bold" for="{{ form_general.contacto_alt.id_for_label }}">
-                            ¿Habilitar Contacto Alternativo?
+                            ¿Habilitar contacto alternativo?
                         </label>
                     </div>
 
                     <div id="seccion-alternativo" class="mt-3 p-3 bg-light rounded border" style="display: none;">
-                        <h6 class="text-muted mb-3">Datos del Contacto Adicional</h6>
+                        <h6 class="text-muted mb-3">Datos del contacto adicional</h6>
                         
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Teléfono Alternativo</label>
-                                {{ form_general.telefono_alt }}
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label class="form-label">Correo Alternativo</label>
-                                {{ form_general.correo_alt }}
-                            </div>
-                            
-                            <div class="col-12">
-                                <label class="form-label">Observación / Nombre del Contacto</label>
+                            <div class="col-4">
+                                <label class="form-label fw-bold">Nombre del contacto / observación</label>
                                 {{ form_general.observacion_alt }}
                                 <div class="form-text">Si tienes el nombre de la persona, inclúyelo aquí.</div>
                             </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Teléfono alternativo</label>
+                                {{ form_general.telefono_alt }}
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Correo alternativo</label>
+                                {{ form_general.correo_alt }}
+                            </div>                            
                         </div>
                     </div>
                 </div>
@@ -122,19 +119,49 @@
         </div>
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="fw-bold">Plan contratado</label>
                     {{ form_servicio.producto }}
                 </div>
-                <div class="col-md-4">
-                    <label class="fw-bold">Proveedor</label>
-                    {{ form_servicio.proveedor }}
+                <div class="col-md-3">
+                    <label class="fw-bold text-dark">Precio final</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        {{ form_servicio.precio_pactado }}
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label class="fw-bold">Estado del cliente</label>
-                    {{ form_servicio.estado }}
-                </div>  
-
+                <div class="col-md-3">
+                    <label class="fw-bold text-dark">Fecha de creación</label>
+                    {{ form_servicio.fecha_creacion }}
+                    <div class="form-text">Fecha de inicio original del servicio.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="text-primary fw-bold">Caducidad firma electrónica</label>
+                    {{ form_servicio.fecha_caducidad_firma }}
+                    <div class="form-text">Selecciona la fecha de expiración de la firma electrónica.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="text-success fw-bold">Fecha renovación (Inicio)</label>
+                    {{ form_servicio.fecha_renovacion }}
+                </div>
+                <div class="col-md-3">
+                    <label class="text-danger fw-bold">Fecha vencimiento (Final)</label>
+                    {{ form_servicio.fecha_vencimiento }}
+                </div>
+                
+                <div class="col-6 md-4">
+                    <label class="fw-bold text-dark">Consumo de facturas electrónicas</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">Facturas emitidas:</span>                       
+                        {{ form_servicio.facturas_consumidas }}
+                        <button type="button" class="btn btn-primary" id="btn-consultar-db" onclick="consultarBaseExterna()">
+                            <i class="fas fa-sync-alt me-2"></i> Consultar número de facturas
+                        </button>
+                    </div>
+                    <div class="form-text text-primary" id="msg-consulta">
+                        <i class="fas fa-info-circle"></i> Asegúrate de llenar los "Datos Técnicos" abajo (Servidor y BD) antes de consultar.
+                    </div>
+                </div>
                 <div class="col-12 mt-4">
                     <label class="form-label fw-bold border-bottom w-100 pb-2 mb-3">Módulos contratados</label>
                     <div class="row px-2">
@@ -168,41 +195,10 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-3">
-                    <label class="text-success fw-bold">Fecha Creación</label>
-                    {{ form_servicio.fecha_creacion_visual }} 
-                    <small class="text-muted">Fecha del registro en sistema.</small>
-                </div> 
-                <div class="col-md-3">
-                    <label class="text-success fw-bold">Fecha Renovación (Inicio)</label>
-                    {{ form_servicio.fecha_renovacion }}
+                <div class="col-md-12">
+                    <label class="fw-bold text-dark">Observaciones del servicio</label>
+                    {{ form_servicio.observaciones }}
                 </div>
-                <div class="col-md-3">
-                    <label class="text-danger fw-bold">Fecha Vencimiento (+1 Año)</label>
-                    {{ form_servicio.fecha_vencimiento }}
-                </div>
-                <div class="col-md-3">
-                    <label class="text-primary fw-bold">Caducidad Firma Electrónica</label>
-                    {{ form_servicio.fecha_caducidad_firma }}
-                    <div class="form-text">Selecciona la fecha de expiración de la firma electrónica.</div>
-                </div>
-                <div class="col-12 mt-4">
-                    <label class="fw-bold text-dark">Consumo de facturas electrónicas</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light">Facturas Emitidas:</span>
-                        
-                        {{ form_servicio.facturas_consumidas }}
-                        
-                        <button type="button" class="btn btn-primary" id="btn-consultar-db" onclick="consultarBaseExterna()">
-                            <i class="fas fa-sync-alt me-2"></i> Consultar número de facturas
-                        </button>
-                    </div>
-                    <div class="form-text text-primary" id="msg-consulta">
-                        <i class="fas fa-info-circle"></i> Asegúrate de llenar los "Datos Técnicos" abajo (Servidor y BD) antes de consultar.
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -214,51 +210,51 @@
         <div class="card-body">
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Servidor de Alojamiento</label>
+                    <label class="form-label fw-bold">Servidor de alojamiento</label>
                     {{ form_tecnico.servidor_alojamiento }}
                     <div class="form-text">Servidor físico donde reside la base de datos.</div>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Nombre de Base de Datos</label>
+                    <label class="form-label fw-bold">Nombre de base de datos</label>
                     {{ form_tecnico.nombre_basedatos }}
                     <div class="form-text">Nombre exacto en SQL Server (Ej: BD_CLIENTE_2025).</div>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">URL del Portal</label>
+                    <label class="form-label fw-bold">URL del portal</label>
                     {{ form_tecnico.url_portal }}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Número de Portal</label>
+                    <label class="form-label fw-bold">Número de portal</label>
                     {{ form_tecnico.num_portal }}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Número de Servicios</label>
+                    <label class="form-label fw-bold">Número de servicios</label>
                     {{ form_tecnico.num_servicios }}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Versión del Sistema</label>
+                    <label class="form-label fw-bold">Versión del sistema</label>
                     {{ form_tecnico.version }}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Clave del Portal</label>
+                    <label class="form-label fw-bold">Clave del portal</label>
                     {{ form_tecnico.clave_portal }}
                 </div>
                 
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Firma Electrónica</label>
+                    <label class="form-label fw-bold">Firma electrónica</label>
                     {{ form_tecnico.firma }}
                 </div>
                 
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Email del Sistema</label>
+                    <label class="form-label fw-bold">Email del sistema</label>
                     {{ form_tecnico.email_tecnico }}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Clave del Email</label>
+                    <label class="form-label fw-bold">Clave del email</label>
                     {{ form_tecnico.clave_email }}
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label fw-bold">Código (App Password)</label>
+                    <label class="form-label fw-bold">Código del email</label>
                     {{ form_tecnico.code_email }}
                 </div>
             </div>

@@ -15,28 +15,26 @@ class EstiloFormMixin:
                 field.widget.attrs.update({'class': 'form-control'})
 
 class ServicioForm(EstiloFormMixin, forms.ModelForm):
-    # Campo visual para la fecha de creación
-    fecha_creacion_visual = forms.CharField(
-        label="Fecha de Creación",
-        required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'placeholder': 'Automático'})
-    )
 
     class Meta:
         model = DatosServicio
-        # 1. ASEGÚRATE QUE 'facturas_consumidas' ESTÉ EN ESTA LISTA
-        fields = ['producto', 'proveedor', 'estado', 'mod_ventas', 'mod_compras', 'mod_tesoreria', 'mod_inventario', 'fecha_renovacion', 'fecha_vencimiento', 'fecha_caducidad_firma', 'facturas_consumidas']
+        # Agregamos 'precio_pactado' y 'observaciones' a la lista, quitamos fechas viejas si sobran
+        fields = [
+            'producto', 'mod_ventas', 'mod_compras', 'mod_tesoreria', 'mod_inventario', 'fecha_creacion',
+            'fecha_renovacion', 'fecha_vencimiento', 'fecha_caducidad_firma', 
+            'facturas_consumidas', 'precio_pactado', 'observaciones' # <--- NUEVOS CAMPOS AQUÍ
+        ]
         
         widgets = {
+            'fecha_creacion': forms.DateInput(attrs={'type': 'date'}),
             'fecha_renovacion': forms.DateInput(attrs={'type': 'date'}),
             'fecha_vencimiento': forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'}),
             'fecha_caducidad_firma': forms.DateInput(attrs={'type': 'date'}),
+            'facturas_consumidas': forms.NumberInput(attrs={'readonly': 'readonly', 'id': 'id_facturas_consumidas'}),
             
-            # 2. AQUÍ FORZAMOS EL ID PARA QUE JAVASCRIPT LO ENCUENTRE SÍ O SÍ
-            'facturas_consumidas': forms.NumberInput(attrs={
-                'readonly': 'readonly', 
-                'id': 'id_facturas_consumidas'  # <--- ESTO ES LA CLAVE
-            }), 
+            # --- CAMBIO 2: Widgets para los nuevos campos ---
+            'observaciones': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Detalles del servicio'}),
+            'precio_pactado': forms.NumberInput(attrs={'step': '0.01', 'placeholder': '0.00'})
         }
 
 class ClienteForm(EstiloFormMixin, forms.ModelForm):
@@ -44,15 +42,14 @@ class ClienteForm(EstiloFormMixin, forms.ModelForm):
         model = DatosGeneralesCliente
         exclude = ['servicio'] # Este campo se llena automáticamente en la vista
         widgets = {
-            'observaciones': forms.Textarea(attrs={'rows': 3}),
+            'observaciones': forms.Textarea(attrs={'rows': 2}),
             'envio_email': forms.CheckboxInput(), 
             'contacto_alt': forms.CheckboxInput(),
             'activo': forms.CheckboxInput(),
             # Agregamos una clase especial 'text-uppercase' para ayudar al CSS/JS
             'nombres_cliente': forms.TextInput(attrs={'class': 'text-uppercase'}),
             'direccion': forms.Textarea(attrs={'rows': 2, 'class': 'text-uppercase'}),
-            'observacion_alt': forms.Textarea(attrs={'rows': 2, 'class': 'text-uppercase'}),
-            'motivo_precio' : forms.Textarea(attrs={'rows': 2}),
+            'observacion_alt': forms.Textarea(attrs={'rows': 1, 'class': 'text-uppercase'}),
         }
         # 1. VALIDACIÓN PERSONALIZADA DE RUC DUPLICADO
     def clean_ruc_cliente(self):

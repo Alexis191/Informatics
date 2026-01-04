@@ -28,7 +28,8 @@ def listar_clientes(request):
     lista_completa = DatosGeneralesCliente.objects.select_related(
         'servicio', 
         'servicio__producto', 
-        'servicio__estado'
+        'estado',
+        'proveedor'
     ).all().order_by('-id') # Los más recientes primero
     
     # Obtener valores del GET (URL)
@@ -47,11 +48,11 @@ def listar_clientes(request):
 
     # 2. Filtro por Proveedor (relación servicio -> proveedor)
     if filtro_proveedor:
-        lista_completa = lista_completa.filter(servicio__proveedor_id=filtro_proveedor)
+        lista_completa = lista_completa.filter(proveedor_id=filtro_proveedor)
 
     # 3. Filtro por Estado (relación servicio -> estado)
     if filtro_estado:
-        lista_completa = lista_completa.filter(servicio__estado_id=filtro_estado)
+        lista_completa = lista_completa.filter(estado_id=filtro_estado)
 
     # 4. Filtro por Rango de Fechas (Vencimiento)
     if filtro_fecha_ini and filtro_fecha_fin:
