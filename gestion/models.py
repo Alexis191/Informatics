@@ -107,8 +107,6 @@ class DatosGeneralesCliente(models.Model):
     regimen = models.ForeignKey(DatosRegimen, on_delete=models.SET_NULL, null=True, blank=True, default=2, verbose_name="Régimen Tributario")
     # Precio histórico (RD01 Inmutabilidad)
     
-    motivo_precio = models.TextField(null=True, blank=True)
-    
     envio_email = models.BooleanField(default=True)
     observaciones = models.TextField(null=True, blank=True)
 
